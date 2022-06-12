@@ -1,5 +1,3 @@
-// Author: Yuvraj Sakshith
-
 template <class T>
 class segment_tree{
 
@@ -8,6 +6,14 @@ before using this data-structure, make sure that:
 
 1. identity variable is set -> second argument in the constructor
 2. your merge operation is well-defined
+
+Operations Offered:
+
+1. segment_tree(vector<T> v, T identity) -> constructor to build the segment tree for the array/ vector v with the identity value.
+2. operation(x,y) -> operation done while merging two nodes in the seg tree.
+3. query(l,r) -> query elements in the range [l,r] as defined in the operation()
+4. update(i,v) -> update the ith element in the vector by value v. (it increments the value at the index i. for replacing the necessary changes have to be made.
+5. update(l,r,v) -> update the range [l,r] by the value v in the vector. (it replaces the value in the range. for incrementing, the necessary changes have to be made.)
 
 
 */
@@ -59,6 +65,64 @@ private:
     }
   }
 
+  void range_update(int ix, int lo, int hi, int l, int r, int v){ // replaces the value in the given range.
+      if(lazy[ix]!=identity){
+        int times = (hi - lo + 1);
+        T final = identity;
+        for(int i=0;i<times;i++) final = operation(final, lazy[ix]);
+        tree[ix] = final;
+        if(lo!=hi){
+          lazy[2*ix + 1] = operation(lazy[2*ix + 1], lazy[ix]);
+          lazy[2*ix + 2] = operation(lazy[2*ix + 2], lazy[ix]);
+
+        }
+        lazy[ix] = identity;
+      } 
+
+      if(r < lo || l > hi || lo > hi) return;
+
+      if(lo >= l and hi <= r){
+        int times = (hi - lo + 1);
+        T final = identity;
+        for(int i=0;i<times;i++) final = operation(final, v);
+        tree[ix] = final;
+        if(lo!=hi){
+          lazy[2*ix + 1] = operation(lazy[2*ix + 1], lazy[ix]);
+          lazy[2*ix + 2] = operation(lazy[2*ix + 2], lazy[ix]);
+        }
+        return;
+
+      }
+
+      int mid = (lo + hi) >> 1;
+      range_update(2*ix + 1, lo, mid, l, r, v);
+      range_update(2*ix + 2, mid + 1, hi, l, r, v);
+      tree[ix] = merge(tree[2*ix + 1], tree[2*ix + 2]);
+  }
+
+  T lazy_query(int ix, int lo, int hi, int l, int r){
+      if(lazy[ix] != identity){
+        int times = (hi - lo + 1);
+        T final = identity;
+        for(int i=0;i<times;i++) final = operation(final, lazy[ix]);
+        tree[ix] = final;
+        if(lo!=hi){
+          lazy[2*ix + 1] = operation(lazy[2*ix + 1], lazy[ix]);
+          lazy[2*ix + 2] = operation(lazy[2*ix + 2], lazy[ix]);
+
+        }
+        lazy[ix] = identity;
+      }
+
+      if(r < lo || l > hi || lo > hi) return  identity;
+      if(lo >= l and hi <= r){
+        return tree[ix];
+      }
+
+      int mid = (lo + hi) >> 1;
+      return operation(lazy_query(2*ix + 1, lo, mid, l,r), lazy_query(2*ix + 2, mid + 1, hi, l, r));
+  }
+
   
 
 public:
@@ -75,11 +139,11 @@ public:
   }
 
   T query(int l, int r){
-    return tree_query(0,0,arr.size()-1,l,r);
+    return lazy_query(0,0,arr.size()-1,l,r);
   }
 
   void update(int i, int v){
-    point_update(0,0,arr.size()-1, i, v);
+    range_update(0,0,arr.size()-1, i, i, v);
   }
 
   void update(int l, int r, int v){
