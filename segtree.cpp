@@ -1,3 +1,5 @@
+// Author: Yuvraj Sakshith
+
 template <class T>
 class segment_tree{
 
