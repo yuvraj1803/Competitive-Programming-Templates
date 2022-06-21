@@ -1,37 +1,44 @@
-template <class T>
 class DSU{
-
-private:
-
-    map<T,T> parent;
-    set<T> init;
-    map<T,int> size;
-    void buildParent(){
-		
-	for(auto node: init){
-		parent[node] = node;
-		size[node] = 1;
-	}
-	
-    }
-
 public:
-    void initSet(set<T> s){
-	init = s;
-	buildParent();
-    }
+	set<int> s;
+	vector<int> parent;
+	vector<int> rank;
+	DSU(int n){
+		parent.resize(n);
+		rank.resize(n);
+		for(int i=0;i<n;i++){
+			s.ins(i);
+			parent[i] = i;
+			rank[i] = 0;
+		}
+	}
 
-    int setSize(int x){
-	return size[find(x)];
-    }
-    T find(T x){
+	int Find(int x){
+		if(parent[x]!=x){
+			parent[x] = Find(parent[x]);
+		}
+		return parent[x];
+	}
 
-        if(parent[x]!=x) return find(parent[x]);
-        else return x;
-    }
+	void Union(int x, int y){
+		int xR = Find(x);
+		int yR = Find(y);
 
-    void set_union(T x, T y){
-      size[find(x)] += size[find(y)];
-      parent[find(y)] = find(x);
-    }
+		if(xR == yR){
+			return;
+		}
+
+		if(rank[xR] < rank[yR]){
+			parent[xR] = yR;
+		}else if(rank[xR] > rank[yR]){
+			parent[yR] = xR;
+		}else{
+			parent[xR] = yR;
+			rank[yR]++;
+		}
+	}
+
+	int Same(int x, int y){
+		return Find(x) == Find(y);
+	}
 };
