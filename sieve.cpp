@@ -1,6 +1,7 @@
 const int N = 1e6;
 bool sieve[N];
 
+
 void pc(){
 	memset(sieve, 1, sizeof(sieve));
 	sieve[0] = sieve[1] = 0;
