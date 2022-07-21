@@ -127,8 +127,8 @@ public:
     int N = a.size();
     tree.resize(4*N);
     lazy.resize(4*N);
-	tree.assign(4*N, id);
-	lazy.assign(4*N, id);
+    tree.assign(4*N, id);
+    lazy.assign(4*N, id);
     identity = id;
     arr = a;
     build_tree(0,0,N-1);
