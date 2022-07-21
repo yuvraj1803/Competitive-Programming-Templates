@@ -10,7 +10,7 @@ before using this data-structure, make sure that:
 
 */
 
-private:
+	public:
 
   vector<T> tree;
   vector<T> lazy; // lazy-tree
@@ -18,7 +18,7 @@ private:
   T identity;  //this is what is returned if the current range is disjoint in a few recursive functions defined below.
 
   T operation(T x, T y){ 
-    return x + y;
+    return x+y;
   }
 
   T merge(T x, T y){   // this is the merge function which merges two nodes in the tree
@@ -57,12 +57,13 @@ private:
     }
   }
 
-  void range_update(int ix, int lo, int hi, int l, int r, int v){
+  void range_update(int ix, int lo, int hi, int l, int r, int v){ // increments range [l,r] with value v. See below if you want to replace instead of increment.
       if(lazy[ix]!=identity){
         int times = (hi - lo + 1);
         T final = identity;
         for(int i=0;i<times;i++) final = operation(final, lazy[ix]);
-        tree[ix] = final;
+        tree[ix] += final; // replace +=  with = if you want to replace instead of increment.
+
         if(lo!=hi){
           lazy[2*ix + 1] = operation(lazy[2*ix + 1], lazy[ix]);
           lazy[2*ix + 2] = operation(lazy[2*ix + 2], lazy[ix]);
@@ -77,7 +78,8 @@ private:
         int times = (hi - lo + 1);
         T final = identity;
         for(int i=0;i<times;i++) final = operation(final, v);
-        tree[ix] = final;
+        tree[ix] += final;// replace +=  with = if you want to replace instead of increment.
+
         if(lo!=hi){
           lazy[2*ix + 1] = operation(lazy[2*ix + 1], v);
           lazy[2*ix + 2] = operation(lazy[2*ix + 2], v);
@@ -97,7 +99,7 @@ private:
         int times = (hi - lo + 1);
         T final = identity;
         for(int i=0;i<times;i++) final = operation(final, lazy[ix]);
-        tree[ix] = final;
+        tree[ix] += final;  // replace +=  with = if you want to replace instead of increment.
         if(lo!=hi){
           lazy[2*ix + 1] = operation(lazy[2*ix + 1], lazy[ix]);
           lazy[2*ix + 2] = operation(lazy[2*ix + 2], lazy[ix]);
@@ -125,6 +127,8 @@ public:
     int N = a.size();
     tree.resize(4*N);
     lazy.resize(4*N);
+	tree.assign(4*N, id);
+	lazy.assign(4*N, id);
     identity = id;
     arr = a;
     build_tree(0,0,N-1);
