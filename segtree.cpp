@@ -7,14 +7,6 @@ before using this data-structure, make sure that:
 1. identity variable is set -> second argument in the constructor
 2. your merge operation is well-defined
 
-Operations Offered:
-
-1. segment_tree(vector<T> v, T identity) -> constructor to build the segment tree for the array/ vector v with the identity value.
-2. operation(x,y) -> operation done while merging two nodes in the seg tree.
-3. query(l,r) -> query elements in the range [l,r] as defined in the operation()
-4. update(i,v) -> update the ith element in the vector by value v. (it increments the value at the index i. for replacing the necessary changes have to be made.
-5. update(l,r,v) -> update the range [l,r] by the value v in the vector. (it replaces the value in the range. for incrementing, the necessary changes have to be made.)
-
 
 */
 
@@ -65,7 +57,7 @@ private:
     }
   }
 
-  void range_update(int ix, int lo, int hi, int l, int r, int v){ // replaces the value in the given range.
+  void range_update(int ix, int lo, int hi, int l, int r, int v){
       if(lazy[ix]!=identity){
         int times = (hi - lo + 1);
         T final = identity;
@@ -87,8 +79,8 @@ private:
         for(int i=0;i<times;i++) final = operation(final, v);
         tree[ix] = final;
         if(lo!=hi){
-          lazy[2*ix + 1] = operation(lazy[2*ix + 1], lazy[ix]);
-          lazy[2*ix + 2] = operation(lazy[2*ix + 2], lazy[ix]);
+          lazy[2*ix + 1] = operation(lazy[2*ix + 1], v);
+          lazy[2*ix + 2] = operation(lazy[2*ix + 2], v);
         }
         return;
 
@@ -152,3 +144,4 @@ public:
 
 
 };
+
