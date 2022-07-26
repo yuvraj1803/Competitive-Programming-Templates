@@ -3,7 +3,7 @@
 #ifdef debug
 	#include "yuvraj/debug.h"
 #else
-	#define print(x) 18
+	#define print(x) 18;
 #endif
 
 #define int	long long
